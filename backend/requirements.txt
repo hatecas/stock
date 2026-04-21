@@ -1,0 +1,11 @@
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+httpx==0.27.2
+supabase==2.10.0
+anthropic==0.40.0
+google-generativeai==0.8.3
+yfinance==0.2.51
+finance-datareader==0.9.96
+beautifulsoup4==4.12.3
+feedparser==6.0.11
+python-dotenv==1.0.1
