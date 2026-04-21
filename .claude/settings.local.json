@@ -13,7 +13,9 @@
       "mcp__Claude_Preview__preview_start",
       "Bash(rm -rf .next/dev/lock)",
       "Bash(powershell 'Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }')",
-      "Bash(powershell \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue\")"
+      "Bash(powershell \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/news/crawl --max-time 60)",
+      "Bash(curl -s http://localhost:3000/api/news?limit=3)"
     ]
   }
 }

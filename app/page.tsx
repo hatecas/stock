@@ -6,14 +6,20 @@ import { RankList } from "@/components/RankList";
 import { Watchlist } from "@/components/Watchlist";
 import { Heatmap } from "@/components/Heatmap";
 import { usStocks, krStocks, gainers, losers } from "@/lib/mockData";
+import { getTopNewsSlides } from "@/lib/news";
 
-export default function Home() {
+// 홈은 매 요청마다 뉴스 fresh 조회 (정적 캐싱 비활성)
+export const revalidate = 60;
+
+export default async function Home() {
+  const slides = await getTopNewsSlides(5);
+
   return (
     <>
       <TopBar />
 
       <main className="mx-auto flex w-full max-w-[1280px] flex-col gap-8 px-6 py-8 md:px-10">
-        <NewsSlider />
+        <NewsSlider slides={slides} />
         <AIPickGrid />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

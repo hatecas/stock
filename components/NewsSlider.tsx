@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Flame } from "lucide-react";
-import { newsSlides } from "@/lib/mockData";
+import { newsSlides as fallback, type NewsSlide } from "@/lib/mockData";
 
-export function NewsSlider() {
+export function NewsSlider({ slides }: { slides?: NewsSlide[] }) {
+  const newsSlides = slides && slides.length > 0 ? slides : fallback;
   const [idx, setIdx] = useState(0);
   const [time, setTime] = useState<string>("");
 
@@ -22,7 +23,7 @@ export function NewsSlider() {
       setIdx((i) => (i + 1) % newsSlides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [newsSlides.length]);
 
   const go = (dir: number) =>
     setIdx((i) => (i + dir + newsSlides.length) % newsSlides.length);
