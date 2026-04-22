@@ -3,6 +3,11 @@ import { ArrowLeft } from "lucide-react";
 import { StockChart } from "@/components/StockChart";
 import { AIAnalysis } from "@/components/AIAnalysis";
 import { RelatedNews } from "@/components/RelatedNews";
+import { getAnalyses } from "@/lib/analysis";
+
+// AI 호출은 시간이 걸리므로 동적 렌더링
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 export default async function StockDetail({
   params,
@@ -11,6 +16,8 @@ export default async function StockDetail({
 }) {
   const { ticker } = await params;
   const t = decodeURIComponent(ticker);
+  // Claude + Gemini 병렬 분석 (캐시 있으면 즉시, 없으면 최대 ~30s)
+  const analyses = await getAnalyses(t);
 
   // 임시 목업 — 나중에 Supabase/외부 API에서 조회
   const stock = {
@@ -108,7 +115,7 @@ export default async function StockDetail({
           </div>
         </section>
 
-        <AIAnalysis ticker={stock.ticker} />
+        <AIAnalysis ticker={stock.ticker} claude={analyses.claude} gemini={analyses.gemini} />
         <RelatedNews ticker={stock.ticker} />
       </main>
 

@@ -15,7 +15,24 @@
       "Bash(powershell 'Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }')",
       "Bash(powershell \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue\")",
       "Bash(curl -s -X POST http://localhost:3000/api/news/crawl --max-time 60)",
-      "Bash(curl -s http://localhost:3000/api/news?limit=3)"
+      "Bash(curl -s http://localhost:3000/api/news?limit=3)",
+      "Bash(curl -s --max-time 80 http://localhost:3000/api/analyze/NVDA)",
+      "Bash(awk -F= '/GEMINI/ {print $1 \" \\(length: \" length\\($2\\) \", starts with: \" substr\\($2,1,4\\) \"...\\)\"}' .env.local)",
+      "Bash(curl -s --max-time 60 \"http://localhost:3000/api/analyze/TSLA\")",
+      "Bash(python -c \"import sys, json; d=json.load\\(sys.stdin\\); print\\('CLAUDE:', d['claude']['score'] if d.get\\('claude'\\) else 'FAIL'\\); print\\('GEMINI:', d['gemini']['score'] if d.get\\('gemini'\\) else 'FAIL'\\); print\\('GEMINI summary:', d['gemini']['summary'] if d.get\\('gemini'\\) else ''\\)\")",
+      "Bash(awk '/GEMINI/ {gsub\\(/\\\\r/,\"<CR>\"\\); print}' .env.local)",
+      "Bash(curl -s --max-time 60 \"http://localhost:3000/api/analyze/AAPL\")",
+      "Bash(python -c \"import sys, json; d=json.load\\(sys.stdin\\); print\\('CLAUDE:', d['claude']['score'] if d.get\\('claude'\\) else 'FAIL'\\); print\\('GEMINI:', d['gemini']['score'] if d.get\\('gemini'\\) else 'FAIL'\\); print\\('GEMINI summary:', d['gemini']['summary'] if d.get\\('gemini'\\) else 'none'\\)\")",
+      "Bash(curl -s --max-time 60 \"http://localhost:3000/api/analyze/MSFT\")",
+      "Bash(awk -F= '/^GEMINI_API_KEY/ {print \"file ends with:\", substr\\($2, length\\($2\\)-3\\)}' .env.local)",
+      "Bash(powershell '$env:GEMINI_API_KEY')",
+      "Bash(powershell '[System.Environment]::GetEnvironmentVariable\\(\"GEMINI_API_KEY\", \"User\"\\)')",
+      "Bash(powershell '[System.Environment]::GetEnvironmentVariable\\(\"GEMINI_API_KEY\", \"Machine\"\\)')",
+      "Bash(powershell '[System.Environment]::SetEnvironmentVariable\\(\"GEMINI_API_KEY\", $null, \"User\"\\)')",
+      "Bash(curl -s --max-time 60 \"http://localhost:3000/api/analyze/GOOGL\")",
+      "Bash(python -c \"import sys, json; d=json.load\\(sys.stdin\\); c=d.get\\('claude'\\); g=d.get\\('gemini'\\); print\\('CLAUDE:', c['score'] if c else 'FAIL', '|', c['verdict'] if c else ''\\); print\\('GEMINI:', g['score'] if g else 'FAIL', '|', g['verdict'] if g else ''\\); print\\(\\); print\\('Gemini summary:', g['summary'] if g else 'none'\\)\")",
+      "Bash(curl -s --max-time 60 \"http://localhost:3000/api/analyze/META\")",
+      "Bash(python -c \"import sys, json; d=json.load\\(sys.stdin\\); c=d.get\\('claude'\\); g=d.get\\('gemini'\\); print\\('CLAUDE:', \\(c or {}\\).get\\('score','FAIL'\\), '|', \\(c or {}\\).get\\('verdict',''\\)\\); print\\('GEMINI:', \\(g or {}\\).get\\('score','FAIL'\\), '|', \\(g or {}\\).get\\('verdict',''\\)\\); print\\(\\); print\\('Gemini summary:', \\(g or {}\\).get\\('summary', 'none'\\)\\)\")"
     ]
   }
 }

@@ -1,7 +1,11 @@
 import Link from "next/link";
-import { aiPicks, fmt, signCls, signStr } from "@/lib/mockData";
+import { aiPicks as mockPicks, fmt, signCls, signStr, type Stock } from "@/lib/mockData";
 
-export function AIPickGrid() {
+type AIPick = Stock & { summary?: string };
+
+export function AIPickGrid({ picks }: { picks?: AIPick[] }) {
+  const data: AIPick[] = picks && picks.length > 0 ? picks : mockPicks;
+
   return (
     <section id="ai" className="flex flex-col gap-5">
       <div className="flex items-center justify-between gap-3 px-1">
@@ -15,7 +19,7 @@ export function AIPickGrid() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {aiPicks.map((p) => (
+        {data.map((p) => (
           <Link
             key={p.ticker}
             href={`/stock/${p.ticker}`}
@@ -23,7 +27,6 @@ export function AIPickGrid() {
           >
             <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[var(--color-claude)] via-[var(--color-consensus)] to-[var(--color-gemini)]" />
 
-            {/* Header: ticker + price */}
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 pl-0.5">
                 <div className="truncate text-[22px] font-extrabold tracking-tight">{p.ticker}</div>
@@ -37,14 +40,13 @@ export function AIPickGrid() {
               </div>
             </div>
 
-            {/* Big AI scores */}
             <div className="flex gap-3">
               <div className="flex flex-1 flex-col gap-1.5 rounded-xl bg-[var(--color-bg-elev-2)] px-3.5 py-3">
                 <span className="text-[10px] font-bold tracking-widest text-[var(--color-text-dim)]">
                   CLAUDE
                 </span>
                 <span className="text-[28px] font-extrabold leading-none text-[var(--color-claude)]">
-                  {p.claude}
+                  {p.claude || "—"}
                 </span>
                 <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/5">
                   <span
@@ -58,7 +60,7 @@ export function AIPickGrid() {
                   GEMINI
                 </span>
                 <span className="text-[28px] font-extrabold leading-none text-[var(--color-gemini)]">
-                  {p.gemini}
+                  {p.gemini || "—"}
                 </span>
                 <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/5">
                   <span
@@ -69,9 +71,8 @@ export function AIPickGrid() {
               </div>
             </div>
 
-            {/* One-line summary */}
             <p className="mt-auto border-t border-dashed border-[var(--color-border)] pl-0.5 pt-3 text-[12px] leading-relaxed text-[var(--color-text-dim)]">
-              {p.summary}
+              {p.summary ?? "클릭하면 AI가 이 종목을 분석합니다"}
             </p>
           </Link>
         ))}

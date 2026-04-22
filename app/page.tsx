@@ -5,14 +5,28 @@ import { StockTable } from "@/components/StockTable";
 import { RankList } from "@/components/RankList";
 import { Watchlist } from "@/components/Watchlist";
 import { Heatmap } from "@/components/Heatmap";
-import { usStocks, krStocks, gainers, losers } from "@/lib/mockData";
+import {
+  usStocks as mockUs,
+  krStocks as mockKr,
+  gainers as mockGainers,
+  losers as mockLosers,
+} from "@/lib/mockData";
 import { getTopNewsSlides } from "@/lib/news";
+import { getStocksLive } from "@/lib/prices";
 
-// 홈은 매 요청마다 뉴스 fresh 조회 (정적 캐싱 비활성)
 export const revalidate = 60;
 
 export default async function Home() {
-  const slides = await getTopNewsSlides(5);
+  const [slides, live] = await Promise.all([getTopNewsSlides(5), getStocksLive()]);
+
+  const usStocks = live.us.length > 0 ? live.us : mockUs;
+  const krStocks = live.kr.length > 0 ? live.kr : mockKr;
+  const gainers = live.gainers.length > 0
+    ? live.gainers.map((s) => ({ ticker: s.ticker, name: s.name, price: s.price, chg: s.chg }))
+    : mockGainers;
+  const losers = live.losers.length > 0
+    ? live.losers.map((s) => ({ ticker: s.ticker, name: s.name, price: s.price, chg: s.chg }))
+    : mockLosers;
 
   return (
     <>
@@ -20,7 +34,7 @@ export default async function Home() {
 
       <main className="mx-auto flex w-full max-w-[1280px] flex-col gap-8 px-6 py-8 md:px-10">
         <NewsSlider slides={slides} />
-        <AIPickGrid />
+        <AIPickGrid picks={live.aiPicks} />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <StockTable id="us" title="미국주식" flag="🇺🇸" stocks={usStocks} />
@@ -38,7 +52,7 @@ export default async function Home() {
 
       <footer className="mx-auto mt-10 flex w-full max-w-[1280px] items-center justify-between border-t border-[var(--color-border)] px-10 py-6 text-xs text-[var(--color-text-dim)]">
         <div>StockHub · 개인용 대시보드</div>
-        <div>데이터는 샘플입니다. 실시간 연동은 백엔드 작업 후 제공됩니다.</div>
+        <div>실시간 시세 (Yahoo Finance · 네이버 금융)</div>
       </footer>
     </>
   );
